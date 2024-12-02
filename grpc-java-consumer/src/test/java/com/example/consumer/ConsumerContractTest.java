@@ -58,25 +58,11 @@ public class ConsumerContractTest {
     @PactTestFor(pactMethod = "getMikuMessage")
     @MockServerConfig(implementation = MockServerImplementation.Plugin, registryEntry = "protobuf/transport/grpc")
     void testGetMikuMessage(MockServer mockServer, V4Interaction.SynchronousMessages interaction) throws InvalidProtocolBufferException {
-        ManagedChannel channel = ManagedChannelBuilder.forTarget("127.0.0.1:" + mockServer.getPort())
-                .usePlaintext()
-                .build();
-
-        try {
-            // Create the gRPC stub
-            MikuServiceGrpc.MikuServiceBlockingStub stub = MikuServiceGrpc.newBlockingStub(channel);
-
-            // Create the request message from the interaction
-            Miku.EmptyRequest request = Miku.EmptyRequest.parseFrom(interaction.getRequest().getContents().getValue());
-
-            // Call the mocked service and verify the response
-            Miku.MessageResponse response = stub.getMessage(request);
-        } finally {
-            channel.shutdownNow();
-        }
+        ConsumerService consumerService = new ConsumerService("127.0.0.1", mockServer.getPort());
+        consumerService.getMikuMessage();
     }
-
     /*
+
     @Pact(consumer = "grpc-consumer-miku")
     V4Pact getMikuPhoneNumber(PactBuilder builder) {
         return builder
@@ -100,19 +86,9 @@ public class ConsumerContractTest {
     @PactTestFor(pactMethod = "getMikuPhoneNumber")
     @MockServerConfig(implementation = MockServerImplementation.Plugin, registryEntry = "protobuf/transport/grpc")
     void testGetMikuPhoneNumber(MockServer mockServer, V4Interaction.SynchronousMessages interaction) throws InvalidProtocolBufferException {
-        ManagedChannel channel = ManagedChannelBuilder.forTarget("127.0.0.1:" + mockServer.getPort())
-                .usePlaintext()
-                .build();
-
-        try {
-            MikuServiceGrpc.MikuServiceBlockingStub stub = MikuServiceGrpc.newBlockingStub(channel);
-
-            Miku.EmptyRequest request = Miku.EmptyRequest.parseFrom(interaction.getRequest().getContents().getValue());
-            Miku.PhoneNumberResponse response = stub.getPhoneNumber(request);
-        } finally {
-            channel.shutdownNow();
-        }
+        ConsumerService consumerService = new ConsumerService("127.0.0.1", mockServer.getPort());
+        consumerService.getMikuPhoneNumber();
     }
-    
      */
+
 }
