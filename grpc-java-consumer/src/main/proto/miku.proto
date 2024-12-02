@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package miku;
+
+option java_package = "com.example.miku";
+option java_outer_classname = "Miku";
+
+service MikuService {
+  rpc GetMessage (EmptyRequest) returns (MessageResponse);
+  rpc GetPhoneNumber (EmptyRequest) returns (PhoneNumberResponse);
+}
+
+message EmptyRequest {}
+
+message MessageResponse {
+  string message = 1;
+}
+
+message PhoneNumberResponse {
+  string phone_number = 1;
+}
